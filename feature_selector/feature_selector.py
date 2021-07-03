@@ -18,6 +18,9 @@ import gc
 # utilities
 from itertools import chain
 
+# stats tool convert r to p
+import scipy.stats as ss
+
 class FeatureSelector():
     """
     Class for performing feature selection for machine learning or data preprocessing.
@@ -165,7 +168,7 @@ class FeatureSelector():
         Parameters
         --------
 
-        correlation_threshold : float between 0 and 1
+        correlation_threshold : float between 0 and 1 (r-value)
             Value of the Pearson correlation cofficient for identifying correlation features
 
         one_hot : boolean, default = False
@@ -190,6 +193,12 @@ class FeatureSelector():
 
         else:
             corr_matrix = self.data.corr()
+
+        if correlation_threshold <= 0.05:
+	        r = corr_matrix
+	        t = r*np.sqrt((n-2)/(1-r*r))
+	        corr_matrix = 1 - ss.t.cdf(t, n-2)
+	        correlation_threshold = 1 - correlation_threshold
         
         self.corr_matrix = corr_matrix
     
@@ -292,10 +301,10 @@ class FeatureSelector():
         for _ in range(n_iterations):
 
             if task == 'classification':
-                model = lgb.LGBMClassifier(n_estimators=1000, learning_rate = 0.05, verbose = -1, random_state=123456)
+                model = lgb.LGBMClassifier(n_estimators=1000, learning_rate = 0.05, verbose = -1)
 
             elif task == 'regression':
-                model = lgb.LGBMRegressor(n_estimators=1000, learning_rate = 0.05, verbose = -1, random_state=123456)
+                model = lgb.LGBMRegressor(n_estimators=1000, learning_rate = 0.05, verbose = -1)
 
             else:
                 raise ValueError('Task must be either "classification" or "regression"')
