@@ -18,9 +18,6 @@ import gc
 # utilities
 from itertools import chain
 
-# stats tool convert r to p
-import scipy.stats as ss
-
 class FeatureSelector():
     """
     Class for performing feature selection for machine learning or data preprocessing.
@@ -168,7 +165,7 @@ class FeatureSelector():
         Parameters
         --------
 
-        correlation_threshold : float between 0 and 1 (r-value)
+        correlation_threshold : float between 0 and 1
             Value of the Pearson correlation cofficient for identifying correlation features
 
         one_hot : boolean, default = False
@@ -193,13 +190,6 @@ class FeatureSelector():
 
         else:
             corr_matrix = self.data.corr()
-
-        if correlation_threshold <= 0.05:
-	        r = corr_matrix
-	        n = corr_matrix.shape[0]
-	        t = r*np.sqrt((n-2)/(1-r*r))
-	        corr_matrix = 1 - ss.t.cdf(t, n-2)
-	        correlation_threshold = 1 - correlation_threshold
         
         self.corr_matrix = corr_matrix
     
