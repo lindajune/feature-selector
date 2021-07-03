@@ -304,9 +304,9 @@ class FeatureSelector():
             if early_stopping:
                 
                 if task == 'classification':
-                	train_features, valid_features, train_labels, valid_labels = train_test_split(features, labels, test_size = 0.33, stratify=labels)
+                	train_features, valid_features, train_labels, valid_labels = train_test_split(features, labels, test_size = 0.33, stratify=labels, random_state=n_iterations)
                 else:
-                	train_features, valid_features, train_labels, valid_labels = train_test_split(features, labels, test_size = 0.33)
+                	train_features, valid_features, train_labels, valid_labels = train_test_split(features, labels, test_size = 0.33, random_state=n_iterations)
 
                 # Train the model with early stopping
                 model.fit(train_features, train_labels, eval_metric = eval_metric,
