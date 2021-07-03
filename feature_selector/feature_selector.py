@@ -196,6 +196,7 @@ class FeatureSelector():
 
         if correlation_threshold <= 0.05:
 	        r = corr_matrix
+	        n = corr_matrix.shape[0]
 	        t = r*np.sqrt((n-2)/(1-r*r))
 	        corr_matrix = 1 - ss.t.cdf(t, n-2)
 	        correlation_threshold = 1 - correlation_threshold
