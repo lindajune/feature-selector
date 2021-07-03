@@ -292,10 +292,10 @@ class FeatureSelector():
         for _ in range(n_iterations):
 
             if task == 'classification':
-                model = lgb.LGBMClassifier(n_estimators=1000, learning_rate = 0.05, verbose = -1)
+                model = lgb.LGBMClassifier(n_estimators=1000, learning_rate = 0.05, verbose = False)
 
             elif task == 'regression':
-                model = lgb.LGBMRegressor(n_estimators=1000, learning_rate = 0.05, verbose = -1)
+                model = lgb.LGBMRegressor(n_estimators=1000, learning_rate = 0.05, verbose = False)
 
             else:
                 raise ValueError('Task must be either "classification" or "regression"')
@@ -303,7 +303,10 @@ class FeatureSelector():
             # If training using early stopping need a validation set
             if early_stopping:
                 
-                train_features, valid_features, train_labels, valid_labels = train_test_split(features, labels, test_size = 0.33, stratify=labels)
+                if task == 'classification':
+                	train_features, valid_features, train_labels, valid_labels = train_test_split(features, labels, test_size = 0.33, stratify=labels)
+                else:
+                	train_features, valid_features, train_labels, valid_labels = train_test_split(features, labels, test_size = 0.33)
 
                 # Train the model with early stopping
                 model.fit(train_features, train_labels, eval_metric = eval_metric,
@@ -339,7 +342,7 @@ class FeatureSelector():
         self.record_zero_importance = record_zero_importance
         self.ops['zero_importance'] = to_drop
         
-        # print('\n%d features with zero importance after one-hot encoding.\n' % len(self.ops['zero_importance']))
+        print('\n%d features with zero importance after one-hot encoding.\n' % len(self.ops['zero_importance']))
     
     def identify_low_importance(self, cumulative_importance):
         """
